@@ -44,7 +44,7 @@ def main():
     
     if message == "":
         message = "".join(random.choices(string.ascii_letters, k=300))
-
+    
     final_num = round(email_num / sender_num)
 
     for i in range(len(emails)):
@@ -63,7 +63,7 @@ def SendMail(receiver_email, sender_email, password, message):
             server.starttls(context=context)
             server.ehlo()
             server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, "Subject: " + str(random.randint(0, 10000)) + "\n\n" + message)
+            server.sendmail(sender_email, receiver_email, "From: " + sender_email + "\nTo: " + receiver_email + "\nSubject: Important Business " + str(random.randint(0, 10000)) + "\n\n" + message)
     except Exception as error:
         print("Error: " + str(error))
         sys.exit(2)
