@@ -2,10 +2,18 @@ import smtplib
 import sys
 import ssl
 import random
-import string
 import getpass
 
 def main():
+    rand_strings = ["hello ", "you ", "baby ", "hey ", "what ",
+                    "how ", "where ", "wait ", "what's up ",
+                    "long time no see ", "would you ", "man ",
+                    "woman ", "infant ", "what are you doing ",
+                    "random strings for you ", "random randommm ",
+                    "just some text ", "dont flag me as spam! ",
+                    "wait a minute ", "who are you? ", "yes! ",
+                    "no. ", "no comprende ", "is this real? "]
+
     emails = []
     passwords = []
 
@@ -40,22 +48,27 @@ def main():
     except Exception as error:
         print("Error: " + str(error))
         sys.exit(2)
+    subject = input("Type out intended email subject (will have numbers at end)>> ")
     message = input("Type out intended message (default is random strings)>> ")
     
+    if subject == "":
+        subject = "".join(random.choices(rand_strings))
+
     if message == "":
-        message = "".join(random.choices(string.ascii_letters, k=300))
+        for i in range(random.randint(4, 12)):
+            message = "".join(random.choices(rand_strings))
     
     final_num = round(email_num / sender_num)
 
     for i in range(len(emails)):
         print("Sending emails...")
         for x in range(final_num):
-            SendMail(target_mail, emails[i], passwords[i], message)
+            SendMail(target_mail, emails[i], passwords[i], subject, message)
     
     print("Messages sent!")
     sys.exit(0)
 
-def SendMail(receiver_email, sender_email, password, message):
+def SendMail(receiver_email, sender_email, password, subject, message):
     try:
         context = ssl.create_default_context()
         with smtplib.SMTP("smtp-mail.outlook.com", 587) as server:
@@ -63,7 +76,7 @@ def SendMail(receiver_email, sender_email, password, message):
             server.starttls(context=context)
             server.ehlo()
             server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, "From: " + sender_email + "\nTo: " + receiver_email + "\nSubject: Important Business " + str(random.randint(0, 10000)) + "\n\n" + message)
+            server.sendmail(sender_email, receiver_email, "From: " + sender_email + "\nTo: " + receiver_email + "\nSubject: " + subject + " " + str(random.randint(0, 10000)) + "\n\n" + message)
     except Exception as error:
         print("Error: " + str(error))
         sys.exit(2)
